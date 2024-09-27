@@ -1,0 +1,21 @@
+<%- include('header.ejs') %>
+
+<main>
+    <div class="auth-container">
+        <h2>Login</h2>
+        <form action="/login" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Or login with:</p>
+        <a href="/auth/google" class="btn">Login with Google</a>
+        
+        <p>Don't have an account?</p>
+        <a href="/register" class="btn">Register Here</a>
+    </div>
+</main>
+
+<%- include('footer.ejs') %>

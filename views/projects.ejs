@@ -1,0 +1,36 @@
+<%- include('header.ejs') %>
+
+<main>
+    <div class="projects-container">
+        <h1>My Projects</h1>
+        <section class="project">
+            <h2>Project 1: Book Rewiew App</h2>
+            <p>
+                Book Review App A simple web application for managing and reviewing books. Built with Node.js, Express, and PostgreSQL, this app allows users to:
+
+View a list of books: See all the books you’ve added, complete with cover images, titles, authors, ratings, and notes. Add new books: Easily add new books to your collection by providing the title, author, notes, rating, and read date. Update existing books: Modify the details of books already in your collection. Delete books: Remove books from your collection when they are no longer needed. Features Responsive Design: The app is designed to be user-friendly and works well on both desktop and mobile devices. Dynamic Book Covers: Fetches book cover images from the Open Library API based on the book title. Simple User Interface: Provides a clean and intuitive interface for managing your book collection.
+            </p>
+            <a href="https://github.com/asifpirimov/Book-Notes-APP" class="btn">View Project</a>
+        </section>
+
+        <section class="project">
+            <h2>Project 2: Voice App - Pysis</h2>
+            <p>
+                Key features of the project:
+
+Voice Recognition: The assistant listens for commands using Google Speech Recognition.
+Speech Output: Using Google's text-to-speech (gTTS), the assistant speaks responses and deletes temporary audio files after playback.
+Web Search: It can search the web based on voice input, opening a browser window with Google search results.
+Real-Time Time Display: The assistant reports the current time in a conversational manner.
+Exit Command: Users can easily terminate the program by saying commands like "quit" or "goodbye."
+This project showcases a basic voice interaction system and can be expanded with more commands, enhanced speech recognition accuracy, and further integration with other APIs. It's ideal for demonstrating practical AI usage and creating hands-free applications for personal or professional use.
+            </p>
+            
+            <a href="https://github.com/asifpirimov/Voice-Asistant" class="btn">View Project</a>
+        </section>
+
+        <!-- Add more project sections as needed -->
+    </div>
+</main>
+
+<%- include('footer.ejs') %>

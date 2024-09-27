@@ -1,0 +1,378 @@
+/* Reset some default styles */
+body, h1, h2, p, ul, li, a, form {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #2d2d2d;
+    background: #f5f7fa;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #4b79a1, #283e51);
+    color: #fff;
+    padding: 1rem 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+header nav {
+    display: flex;
+    justify-content: space-between; /* Aligns nav items and logout button */
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto; /* Center header content */
+    padding: 0 1rem;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+header nav ul li a:hover {
+    color: #ffd700;
+}
+
+.logout-btn {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+}
+
+/* Main Container */
+main {
+    padding: 3rem;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding-bottom: 80px; /* Adjust this value to match footer height */
+}
+
+h1, h2 {
+    color: #222;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.5px;
+}
+
+/* Button Styles */
+button, .btn {
+    background: #0066cc;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: background 0.3s ease, transform 0.2s;
+}
+
+button:hover, .btn:hover {
+    background: #004c99;
+    transform: translateY(-2px);
+}
+
+/* Flex Containers */
+.auth-container, .intro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+/* Auth Form */
+.auth-container form {
+    max-width: 420px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.auth-container input {
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccd1d9;
+    border-radius: 0.5rem;
+    transition: border-color 0.2s;
+}
+
+.auth-container input:focus {
+    border-color: #0066cc;
+}
+
+.auth-container button {
+    background: #28a745;
+}
+
+.auth-container button:hover {
+    background: #218838;
+}
+
+/* Footer */
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: #283e51;
+    color: #fff;
+    padding: 1.5rem 0;
+    text-align: center;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000; /* Ensure it stays above other content */
+}
+
+/* Footer links */
+footer ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+}
+
+footer ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+footer ul li a:hover {
+    color: #ffd700;
+}
+
+/* About Page */
+.about-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.about-container:hover {
+    box-shadow: 0 0 25px rgba(0, 0, 0, 0.15);
+}
+
+.about-container h1 {
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+}
+
+/* Projects Page */
+.projects-container {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+}
+
+.project {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.project:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.project h2 {
+    margin-bottom: 1rem;
+}
+
+/* Contact Page */
+.contact-container {
+    max-width: 700px;
+    margin: 3rem auto;
+    padding: 2.5rem;
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.contact-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.contact-container input, 
+.contact-container textarea {
+    padding: 0.8rem;
+    border: 1px solid #ccd1d9;
+    border-radius: 0.5rem;
+    transition: border-color 0.2s ease;
+}
+
+.contact-container input:focus, 
+.contact-container textarea:focus {
+    border-color: #0066cc;
+}
+
+.contact-container button {
+    background: #28a745;
+}
+
+.contact-container button:hover {
+    background: #218838;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1, h3 {
+    margin: 0;
+    padding: 0;
+    color: #2c3e50;
+}
+
+/* Container for the content */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Skills Section */
+.skills-section {
+    background-color: #ffffff;
+    padding: 50px 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 30px;
+    margin-bottom: 80px; /* Ensure there is space at the bottom */
+}
+
+.skills-heading {
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.skills-intro {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+    color: #7f8c8d;
+}
+
+/* Skills list */
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.skill {
+    flex: 1 1 45%; /* Adjusts the width of each skill box */
+    background-color: #ecf0f1;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+.skill:hover {
+    transform: translateY(-5px);
+}
+
+.skill h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #2980b9;
+}
+
+.skill ul {
+    list-style: none;
+    padding: 0;
+}
+
+.skill ul li {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: #34495e;
+    padding-left: 20px;
+    position: relative;
+}
+
+.skill ul li:before {
+    content: '✔';
+    position: absolute;
+    left: 0;
+    color: #27ae60;
+    font-size: 1.2rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .skills-list {
+        flex-direction: column;
+    }
+
+    .skill {
+        flex: 1 1 100%; /* Make each skill take up full width */
+    }
+
+    main {
+        padding-bottom: 60px; /* Adjust for mobile */
+    }
+
+    header nav {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header nav ul li {
+        margin-bottom: 10px;
+    }
+
+    .logout-btn {
+        margin-top: 10px;
+    }
+}
+
+
+    

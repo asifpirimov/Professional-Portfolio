@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Portfolio</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header-section">
+        <nav class="header-nav">
+            <ul class="header-nav-list">
+                
+                <li><a href="/home">Home</a></li>
+                
+                <li><a href="/about">About</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/skills">Skills</a></li>
+                <li><a href="/certificates">Certificates</a></li>
+            </ul>
+            <!-- Inside header nav -->
+<% if (user) { %>
+<form action="/logout" method="POST">
+    <button type="submit" class="logout-btn">Logout</button>
+</form>
+<% } %>
+        </nav>
+    </header>
+</body>
+</html>

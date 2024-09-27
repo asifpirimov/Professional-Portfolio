@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Your Portfolio</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+
+</head>
+<body>
+    <%- include('header.ejs') %>
+
+    <main>
+        <h1>Welcome, <%= user.username %>!</h1>
+        <p>This is your personal dashboard where you can find information about your projects and skills.</p>
+        
+        <!-- Display additional user info if needed -->
+        <section>
+            <h2>Your Details</h2>
+            <p>Username: <%= user.username %></p>
+            <!-- Add more user details here if necessary -->
+        </section>
+
+        <section>
+            <a href="/logout" class="btn">Logout</a>
+        </section>
+    </main>
+
+    <%- include('footer.ejs') %>
+</body>
+</html>
