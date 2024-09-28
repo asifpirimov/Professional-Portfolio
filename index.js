@@ -1,7 +1,8 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs"; // Change this line
+
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth20";
