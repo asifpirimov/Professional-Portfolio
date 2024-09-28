@@ -7,27 +7,14 @@ import { Strategy as LocalStrategy } from "passport-local";
 import GoogleStrategy from "passport-google-oauth20";
 import session from "express-session";
 import dotenv from "dotenv";
+import PgSession from "connect-pg-simple";
+
 
 dotenv.config();
 
 const app = express();
 const port = 3000;
 const saltRounds = 10;
-
-// Setup session management
-app.use(
-    session({
-        secret: process.env.SESSION_SECRET,
-        resave: false,
-        saveUninitialized: true,
-    })
-);
-
-// Middleware
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static("public"));
-app.use(passport.initialize());
-app.use(passport.session());
 
 // PostgreSQL Client
 const db = new pg.Client({
@@ -39,6 +26,66 @@ const db = new pg.Client({
 });
 db.connect();
 
+app.use(
+    session({
+        store: new (PgSession(session))({
+            pool: db, // Connection pool
+            tableName: 'session', // Use a specific table for storing sessions
+        }),
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false, // Recommended: only save session if something changes
+        cookie: { secure: false } // For production, set secure: true (HTTPS)
+    })
+);
+
+
+// Middleware
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Passport Local Strategy for authentication
+passport.use("local", new LocalStrategy(
+    async (username, password, done) => {
+        try {
+            const result = await db.query(
+                "SELECT * FROM users_without WHERE username = $1", [username]
+            );
+            if (result.rows.length === 0) {
+                return done(null, false, { message: "Incorrect username" });
+            }
+
+            const user = result.rows[0];
+            const match = await bcrypt.compare(password, user.password);
+
+            if (!match) {
+                return done(null, false, { message: "Incorrect password" });
+            }
+
+            return done(null, user);
+        } catch (err) {
+            return done(err);
+        }
+    }
+));
+
+// Google Strategy for Google login
+passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback',
+}, async (accessToken, refreshToken, profile, done) => {
+    try {
+        const user = await findOrCreateUser(profile);
+        return done(null, user);
+    } catch (error) {
+        return done(error);
+    }
+}));
+
+// Function to find or create a Google user
 async function findOrCreateUser(profile) {
     const { id, displayName, emails } = profile;
     const email = emails[0].value;
@@ -49,50 +96,17 @@ async function findOrCreateUser(profile) {
     if (user) {
         return user;
     } else {
-        // Generate a random password or set a default password
         const password = await bcrypt.hash("default_password", saltRounds);
         result = await db.query(
             "INSERT INTO users (google_id, username, email, password) VALUES ($1, $2, $3, $4) RETURNING *",
             [id, displayName, email, password]
         );
         user = result.rows[0];
-        console.log(user);
         return user;
     }
 }
 
-
-function ensureAuthenticated(req, res, next){
-    if (req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
-
-passport.use("local", new LocalStrategy(
-    async (username, password, done) => {
-        try {
-            const result = await db.query(
-                "SELECT * FROM users_without WHERE username = $1", [username]
-            );
-            if (result.rows.length === 0) {
-                return done(null, false, {message : "Incorrect username"});
-            }
-            const user = result.rows[0];
-            console.log("User password:", user.password);  // Debugging line
-            const match = await bcrypt.compare(password, user.password);
-            if (!match) {
-                return done(null, false, {message : "Incorrect password"});
-            }
-            return done(null, user);
-        } catch (err) {
-            return done(err);
-        }
-    }
-));
-
-
-
+// Serialize and deserialize user
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
@@ -104,6 +118,7 @@ passport.deserializeUser(async (id, done) => {
         if (!user) {
             return done(null, false);
         }
+
         const isGoogleUser = await checkIfGoogleUser(user.username);
         if (isGoogleUser) {
             deserializeGoogleUser(user.username, done);
@@ -116,7 +131,6 @@ passport.deserializeUser(async (id, done) => {
 });
 
 async function deserializeGoogleUser(username, done) {
-    // If using a separate table for Google users, use this function
     try {
         const result = await db.query('SELECT * FROM users WHERE username = $1', [username]);
         const user = result.rows[0];
@@ -127,7 +141,6 @@ async function deserializeGoogleUser(username, done) {
 }
 
 async function deserializeNormalUser(username, done) {
-    // If using a separate table for normal users, use this function
     try {
         const result = await db.query('SELECT * FROM users_without WHERE username = $1', [username]);
         const user = result.rows[0];
@@ -138,39 +151,22 @@ async function deserializeNormalUser(username, done) {
 }
 
 async function checkIfGoogleUser(username) {
-    // Implement this function to check if the user is a Google user
-    // For example, you can check if the user has a Google ID associated with their account
     const result = await db.query('SELECT google_id FROM users WHERE username = $1', [username]);
     const user = result.rows[0];
-    if (!user) {
-        return false; // User not found, assume not a Google user
-    }
-    return user.google_id !== null;
+    return user && user.google_id !== null;
 }
 
-
-
-
-
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: process.env.GOOGLE_CALLBACK_URL || '/auth/google/callback'  // Using environment variable
-}, async (accessToken, refreshToken, profile, done) => {
-    try {
-        const user = await findOrCreateUser(profile);
-        return done(null, user);
-    } catch (error) {
-        return done(error);
+// Helper function to ensure user is authenticated
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
     }
-}));
+    res.redirect("/login");
+}
 
-
-
-
+// Routes
 app.get("/", ensureAuthenticated, (req, res) => {
-    console.log(req.user);
-    res.render("login.ejs", {user : req.user});
+    res.render("login.ejs", { user: req.user });
 });
 
 app.get("/about", ensureAuthenticated, (req, res) => {
@@ -185,34 +181,29 @@ app.get("/projects", ensureAuthenticated, (req, res) => {
     res.render("projects.ejs", { user: req.user });
 });
 
-
-app.get('/certificates', ensureAuthenticated ,(req, res) => {
-    res.render('certificates.ejs', {user : req.user});
+app.get("/certificates", ensureAuthenticated, (req, res) => {
+    res.render("certificates.ejs", { user: req.user });
 });
 
-
-app.get("/home", ensureAuthenticated ,(req, res) => {
-    res.render("home.ejs", {user : req.user});
-})
+app.get("/home", ensureAuthenticated, (req, res) => {
+    res.render("home.ejs", { user: req.user });
+});
 
 app.get("/login", (req, res) => {
-    res.render("login.ejs", {user : req.user});
+    res.render("login.ejs", { user: req.user });
 });
 
 app.get("/register", (req, res) => {
-    res.render("register.ejs", {user : req.user});
-})
+    res.render("register.ejs", { user: req.user });
+});
 
-app.post(
-    "/login",
-    passport.authenticate("local", {
-      successRedirect: "/home",
-      failureRedirect: "/login",
-    })
-);
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/home",
+    failureRedirect: "/login",
+}));
 
 app.post("/register", async (req, res) => {
-    const {username, email, password} = req.body;
+    const { username, email, password } = req.body;
 
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -224,12 +215,12 @@ app.post("/register", async (req, res) => {
     }
 });
 
-
+// Google authentication routes
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-app.get('/auth/google/callback', passport.authenticate('google', { 
+app.get('/auth/google/callback', passport.authenticate('google', {
     successRedirect: '/home',
-    failureRedirect: '/login'
+    failureRedirect: '/login',
 }));
 
 // Logout route
@@ -242,7 +233,7 @@ app.post('/logout', (req, res, next) => {
     });
 });
 
+// Start server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
-
