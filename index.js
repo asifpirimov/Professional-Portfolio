@@ -24,7 +24,15 @@ const db = new pg.Client({
     password: process.env.PG_PASSWORD,
     port: process.env.PG_PORT,
 });
-db.connect();
+
+db.connect(err => {
+    if (err) {
+        console.error('Failed to connect to the database:', err);
+        process.exit(1); // Exit the application if connection fails
+    }
+    console.log('Connected to the database');
+});
+
 
 app.use(
     session({
