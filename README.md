@@ -3,7 +3,7 @@
 
 ## Description
 
-This portfolio project showcases my journey and skills as a Computer Engineering specialist. It includes various programming projects developed using Python, Java, and JavaScript, highlighting my expertise in software development, data structures, algorithms, and object-oriented programming.
+This portfolio project showcases my journey and skills as a Computer Engineering specialist. It includes various programming projects developed using JavaScript, highlighting my expertise in software development, data structures, algorithms, and object-oriented programming.
 
 ## Features
 
